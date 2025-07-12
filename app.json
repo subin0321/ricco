@@ -8,6 +8,12 @@
     "scheme": "ricco",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+     "assetBundlePatterns": [
+      "**/*"
+    ],
+     "fonts": [
+      "assets/fonts/bodoni-72-oldstyle-book.ttf"
+    ],
     "ios": {
       "supportsTablet": true
     },
