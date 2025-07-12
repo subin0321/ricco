@@ -1,10 +1,12 @@
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
 const { width } = Dimensions.get('window');
 
 export default function ProfileScreen() {
@@ -13,12 +15,43 @@ export default function ProfileScreen() {
   const [birth, setBirth] = useState('');
   const [mbti, setMbti] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const router = useRouter();
   
 
-  const handleLogin = () => {
-    router.push('/main');
+ const handleLogin = () => {
+    // 필수 입력 필드 검증
+    if (!name.trim()) {
+      Alert.alert('알림', '이름을 입력해주세요.');
+      return;
+    }
+    if (!age.trim()) {
+      Alert.alert('알림', '나이를 입력해주세요.');
+      return;
+    }
+    if (!birth.trim()) {
+      Alert.alert('알림', '생일을 선택해주세요.');
+      return;
+    }
+    if (!mbti.trim()) {
+      Alert.alert('알림', 'MBTI를 입력해주세요.');
+      return;
+    }
+
+    // 데이터를 main 페이지로 전달
+    router.push({
+      pathname: '/main',
+      params: {
+        name: name,
+        age: age,
+        birth: birth,
+        mbti: mbti,
+        profileImage: profileImage || '',
+      }
+    });
   };
+
 
   const handleImageUpload = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -69,6 +102,26 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleDatePress = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event: any, date?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    
+    if (date) {
+      setSelectedDate(date);
+      const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+      setBirth(formattedDate);
+    }
+  };
+
+  const hideDatePicker = () => {
+    setShowDatePicker(false);
+  };
+
   return (
     <View style={styles.container}>
       {/* 배경*/}
@@ -113,27 +166,47 @@ export default function ProfileScreen() {
 
         {/* 생일 섹션 */}
         <Text style={styles.label}>Birthday</Text>
-        <TextInput
-          style={styles.input}
-          value={birth}
-          onChangeText={setBirth}
-          placeholder="생일을 선택해주세요"
-          keyboardType="numeric"
-          placeholderTextColor="#999"
-        />
-        {/* 생일 섹션 */}
+        <TouchableOpacity style={styles.dateInput} onPress={handleDatePress}>
+          <Text style={[styles.dateText, !birth && styles.placeholderText]}>
+            {birth || "생일을 선택해주세요"}
+          </Text>
+          <Ionicons name="calendar" size={20} color="#666" />
+        </TouchableOpacity>
+
+        {/* 날짜 선택기 */}
+        {showDatePicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={handleDateChange}
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
+          />
+        )}
+
+        {Platform.OS === 'ios' && showDatePicker && (
+          <TouchableOpacity style={styles.datePickerButton} onPress={hideDatePicker}>
+            <Text style={styles.datePickerButtonText}>확인</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* MBTI 섹션 */}
         <Text style={styles.label}>MBTI</Text>
         <TextInput
           style={styles.input}
           value={mbti}
           onChangeText={setMbti}
           placeholder="MBTI를 입력해주세요."
-          keyboardType="numeric"
           placeholderTextColor="#999"
+          autoCapitalize="characters"
+          maxLength={4}
         />
-         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                  <Text style={styles.loginButtonText}>send</Text>
-         </TouchableOpacity>
+        
+        {/* Send 버튼 */}
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>send</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -168,8 +241,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'left', 
   },
-   imageUploadBox: {
-    flex: 1,
+  imageUploadBox: {
     width: 120,
     height: 120,
     backgroundColor: 'white',
@@ -178,7 +250,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
-    alignSelf: 'flex-start', // 왼쪽 정렬
+    alignSelf: 'center', // 가운데 정렬
   },
   profileImage: {
     width: '100%',
@@ -202,15 +274,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 20,
   },
+  dateInput: {
+    width: '100%',
+    height: 40,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 0,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  placeholderText: {
+    color: '#999',
+  },
+  datePickerButton: {
+    backgroundColor: '#4A90E2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  datePickerButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   loginButton: {
-  
     borderWidth: 2,
     borderColor: 'black',
     backgroundColor: '#4A90E2',
     paddingVertical: 15,
-    paddingHorizontal: 60,
+    paddingHorizontal: 40,
     borderRadius: 25,
     elevation: 3,
+    alignSelf: 'center', // 가운데 정렬
+    marginTop: 20,
   }, 
   loginButtonText: {
     color: 'black',
