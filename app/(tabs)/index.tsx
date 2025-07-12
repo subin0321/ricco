@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     zIndex: 1, // 배경 이미지 위에 표시
   },
   reactLogo: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 120,
     resizeMode: 'contain',
   },
   subtitle: {
@@ -70,15 +70,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loginButton: {
+    position: 'absolute',
     backgroundColor: '#4A90E2',
+    bottom: 100,
     paddingVertical: 15,
     paddingHorizontal: 60,
     borderRadius: 25,
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
   loginButtonText: {
     color: 'white',
