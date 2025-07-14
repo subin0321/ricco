@@ -3,8 +3,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -21,10 +20,15 @@ export default function ProfileScreen() {
 
   // Circle 더미 데이터
   const circleData = [
-    { id: 1, name: '대학친구들' },
-    { id: 2, name: '회사동료들' },
-    { id: 3, name: '취미모임' },
+    { id: 1, name: '우리끼리 서클' },
+    { id: 2, name: '학교 모임' },
+    { id: 3, name: 'circle1' },
+    { id: 4, name: 'circle2' },
+    { id: 5, name: 'circle3' },
+    { id: 6, name: 'circle4' },
   ];
+
+  const [selectedCircle, setSelectedCircle] = useState(3); // 선택된 circle ID
 
   const handleLogin = () => {
     router.push('/main');
@@ -40,6 +44,13 @@ export default function ProfileScreen() {
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri);
     }
+  };
+
+  const handleCirclePress = (circleId: number) => {
+    router.push({
+      pathname: '/circle',
+      params: { circleId }
+    });
   };
 
   return (
@@ -114,6 +125,14 @@ export default function ProfileScreen() {
               </View>
             </View>
           </View>
+          
+          {/* 명함 하단 라인 이미지 */}
+          <View style={styles.cardLineContainer}>
+            <Image 
+              source={require('@/assets/images/card_line.png')} 
+              style={styles.cardLine}
+            />
+          </View>
         </View>
          {/* My Circle 섹션 */}
         <View style={styles.circleHeader}>
@@ -126,13 +145,44 @@ export default function ProfileScreen() {
         {/* Circle 정보 또는 404 메시지 */}
         <View style={styles.circleContent}>
           {circleData.length > 0 ? (
-            <View style={styles.circleList}>
-              {circleData.map((circle) => (
-                <View key={circle.id} style={styles.circleItem}>
-                  <Text style={styles.circleName}>{circle.name}</Text>
+            circleData.length >= 5 ? (
+              <ScrollView 
+                style={styles.scrollView}
+                showsVerticalScrollIndicator={false}
+              >
+                <View style={styles.circleGrid}>
+                  {circleData.map((circle) => (
+                    <TouchableOpacity 
+                      key={circle.id} 
+                      style={styles.circleItem}
+                      onPress={() => handleCirclePress(circle.id)}
+                    >
+                      <Image 
+                        source={require('@/assets/images/folder.png')}
+                        style={styles.folderImage}
+                      />
+                      <Text style={styles.circleName}>{circle.name}</Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              ))}
-            </View>
+              </ScrollView>
+            ) : (
+              <View style={styles.circleGrid}>
+                {circleData.map((circle) => (
+                  <TouchableOpacity 
+                    key={circle.id} 
+                    style={styles.circleItem}
+                    onPress={() => handleCirclePress(circle.id)}
+                  >
+                    <Image 
+                      source={require('@/assets/images/folder.png')}
+                      style={styles.folderImage}
+                    />
+                    <Text style={styles.circleName}>{circle.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )
           ) : (
             <View style={styles.notFoundContainer}>
               <Text style={styles.notFoundText}>404</Text>
@@ -186,12 +236,13 @@ const styles = StyleSheet.create({
   },
   businessCard: {
     backgroundColor: 'white',
-    height:230,
+    height:210,
     borderWidth: 1.5,
     borderColor: 'black',
     padding: 20,
     flexDirection: 'row',
     elevation: 5,
+    position: 'relative',
   },
   photoContainer: {
     width: 100,
@@ -201,7 +252,7 @@ const styles = StyleSheet.create({
   profilePhoto: {
     width: '100%',
     height: '100%',
-    borderRadius: 8,
+    borderRadius:8,
   },
   photoPlaceholder: {
     width: '100%',
@@ -233,7 +284,9 @@ const styles = StyleSheet.create({
   },
   infoGrid: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    gap: 3,
+    bottom:10,
   },
   infoRow: {
     flexDirection: 'row',
@@ -246,13 +299,28 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 12,
     color: '#666',
-    marginBottom: 4,
+   
     fontWeight: '500',
   },
   infoValue: {
     fontSize: 14,
     color: '#333',
     fontWeight: 'bold',
+  },
+  cardLineContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardLine: {
+    bottom: 13,
+    width: '99.9%',
+    height: 35,
+    resizeMode: 'stretch',
   },
   circleHeader: {
     flexDirection: 'row',
@@ -282,29 +350,39 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
   },
-  circleList: {
+  scrollView: {
     flex: 1,
+  },
+  circleGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    alignContent: 'flex-start',
     paddingHorizontal: 0,
   },
   circleItem: {
     width: '48%', 
-    height: 80,
-    backgroundColor: '#f8f9fa',
-    borderWidth: 1.5,
-    borderColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 100,
     marginBottom: 15,
+    padding: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    position: 'relative',
+    overflow: 'visible',
+  },
+  folderImage: {
+    position: 'absolute',
+    top: 0,
+    left: -5,
+    width: '120%',
+    height: '140%',
+    resizeMode: 'contain',
   },
   circleName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
+    bottom: 7,
+    fontSize: 11,
+  
+    color: '#000',
+    zIndex: 1,
   },
   notFoundContainer: {
     flex: 1,
