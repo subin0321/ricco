@@ -3,11 +3,11 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Dimensions, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-const { width } = Dimensions.get('window');
 
 export default function ProfileScreen() {
   const [name, setName] = useState('');
@@ -205,7 +205,12 @@ export default function ProfileScreen() {
         
         {/* Send 버튼 */}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>send</Text>
+          <LinearGradient
+            colors={['#ffffff', '#5A62F2']}
+            style={styles.gradientButton}
+          >
+            <Text style={styles.loginButtonText}>send</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </View>
@@ -235,7 +240,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   profileTitle: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 30,
@@ -309,16 +314,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   loginButton: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'black',
-    backgroundColor: '#4A90E2',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 25,
+    borderRadius: 50,
     elevation: 3,
     alignSelf: 'center', // 가운데 정렬
     marginTop: 20,
+    overflow: 'hidden', // 그라디언트가 border-radius에 맞게 잘리도록
   }, 
+  gradientButton: {
+    paddingVertical: 15,
+    paddingHorizontal: 70,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   loginButtonText: {
     color: 'black',
     fontSize: 16,
