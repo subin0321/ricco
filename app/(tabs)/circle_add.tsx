@@ -1,19 +1,17 @@
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 
 export default function ProfileScreen() {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [birth, setBirth] = useState('');
-  const [mbti, setMbti] = useState('');
+  const [circleName, setCircleName] = useState('');
+  const [introduce, setIntroduce] = useState('');
+  const [member, setMember] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -22,31 +20,27 @@ export default function ProfileScreen() {
 
  const handleLogin = () => {
     // 필수 입력 필드 검증
-    if (!name.trim()) {
-      Alert.alert('알림', '이름을 입력해주세요.');
+    if (!circleName.trim()) {
+      Alert.alert('알림', '서클명을 입력해주세요.');
       return;
     }
-    if (!age.trim()) {
-      Alert.alert('알림', '나이를 입력해주세요.');
+    if (!introduce.trim()) {
+      Alert.alert('알림', '소개 문구를 작성해주세요.');
       return;
     }
-    if (!birth.trim()) {
-      Alert.alert('알림', '생일을 선택해주세요.');
+    if (!member.trim()) {
+      Alert.alert('알림', '최소 한 명 이상의 멤버가 선택되어야 합니다.');
       return;
     }
-    if (!mbti.trim()) {
-      Alert.alert('알림', 'MBTI를 입력해주세요.');
-      return;
-    }
+  
 
     // 데이터를 main 페이지로 전달
     router.push({
       pathname: '/main',
       params: {
-        name: name,
-        age: age,
-        birth: birth,
-        mbti: mbti,
+        circleName: circleName,
+        introduce: introduce,
+        member: member,
         profileImage: profileImage || '',
       }
     });
@@ -106,17 +100,7 @@ export default function ProfileScreen() {
     setShowDatePicker(true);
   };
 
-  const handleDateChange = (event: any, date?: Date) => {
-    if (Platform.OS === 'android') {
-      setShowDatePicker(false);
-    }
-    
-    if (date) {
-      setSelectedDate(date);
-      const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
-      setBirth(formattedDate);
-    }
-  };
+
 
   const hideDatePicker = () => {
     setShowDatePicker(false);
@@ -144,65 +128,42 @@ export default function ProfileScreen() {
         </TouchableOpacity>
         
         {/* 이름 섹션 */}
-        <Text style={styles.label}>NAME</Text>
+        <Text style={styles.label}>Circle Name</Text>
         <TextInput
           style={styles.input}
-          value={name}
-          onChangeText={setName}
-          placeholder="이름을 입력해주세요."
+          value={circleName}
+          onChangeText={setCircleName}
+          placeholder="서클명을 입력해주세요."
           placeholderTextColor="#999"
         />
         
         {/* 나이 섹션 */}
-        <Text style={styles.label}>AGE</Text>
+        <Text style={styles.label}>Introduce</Text>
         <TextInput
           style={styles.input}
-          value={age}
-          onChangeText={setAge}
-          placeholder="나이를 입력해주세요."
+          value={introduce}
+          onChangeText={setIntroduce}
+          placeholder="서클 소개를 입력해주세요."
           keyboardType="numeric"
           placeholderTextColor="#999"
         />
 
         {/* 생일 섹션 */}
-        <Text style={styles.label}>Birthday</Text>
-        <TouchableOpacity style={styles.dateInput} onPress={handleDatePress}>
-          <Text style={[styles.dateText, !birth && styles.placeholderText]}>
-            {birth || "생일을 선택해주세요"}
-          </Text>
-          <Ionicons name="calendar" size={20} color="#666" />
-        </TouchableOpacity>
-
-        {/* 날짜 선택기 */}
-        {showDatePicker && (
-          <DateTimePicker
-            value={selectedDate}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={handleDateChange}
-            maximumDate={new Date()}
-            minimumDate={new Date(1900, 0, 1)}
-          />
-        )}
-
-        {Platform.OS === 'ios' && showDatePicker && (
-          <TouchableOpacity style={styles.datePickerButton} onPress={hideDatePicker}>
-            <Text style={styles.datePickerButtonText}>확인</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* MBTI 섹션 */}
-        <Text style={styles.label}>MBTI</Text>
+         <Text style={styles.label}>Member</Text>
         <TextInput
           style={styles.input}
-          value={mbti}
-          onChangeText={setMbti}
-          placeholder="MBTI를 입력해주세요."
+          value={member}
+          onChangeText={setMember}
+          placeholder="멤버를 찾아보세요."
+          keyboardType="numeric"
           placeholderTextColor="#999"
-          autoCapitalize="characters"
-          maxLength={4}
         />
-        
+
+       
+
+   
+
+   
         {/* Send 버튼 */}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <LinearGradient
@@ -240,15 +201,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   profileTitle: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 30,
     textAlign: 'left', 
   },
   imageUploadBox: {
-    width: 120,
-    height: 120,
+    width: 335,
+    height: 150,
     backgroundColor: 'white',
     borderWidth: 1.5,
     borderColor: 'black',
