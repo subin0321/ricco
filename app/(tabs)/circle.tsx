@@ -11,7 +11,7 @@ export default function CircleScreen() {
   const router = useRouter();
 
   const circleData = {
-    name: '우리끼리 서클',
+    name: '갈비지',
     description: '함께 성장하는 소중한 친구들',
     image: require('@/assets/images/circle_photo.jpg'),
     members: [
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   pageTitle: {
-    fontSize: 32,
+    fontSize:24,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'left',
