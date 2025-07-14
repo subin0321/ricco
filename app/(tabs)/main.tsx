@@ -20,7 +20,7 @@ export default function ProfileScreen() {
 
   // Circle 더미 데이터
   const circleData = [
-    { id: 1, name: '우리끼리 서클' },
+    { id: 1, name: '갈비지' },
     { id: 2, name: '학교 모임' },
     { id: 3, name: 'circle1' },
     { id: 4, name: 'circle2' },
@@ -31,7 +31,7 @@ export default function ProfileScreen() {
   const [selectedCircle, setSelectedCircle] = useState(3); // 선택된 circle ID
 
   const handleLogin = () => {
-    router.push('/main');
+    router.push('/circle_add');
   };
 
   const handleImageUpload = async () => {
@@ -83,7 +83,7 @@ export default function ProfileScreen() {
               />
             ) : (
               <View style={styles.photoPlaceholder}>
-                <Text style={styles.photoPlaceholderText}>사진 추가</Text>
+                <Text style={styles.photoPlaceholderText}>사진</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -137,7 +137,11 @@ export default function ProfileScreen() {
          {/* My Circle 섹션 */}
         <View style={styles.circleHeader}>
           <Text style={styles.circleTitle}>My Circle</Text>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity 
+          style={styles.addButton}
+          onPress={handleLogin}
+          >
+            
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
         </View>
@@ -256,14 +260,13 @@ const styles = StyleSheet.create({
   },
   photoPlaceholder: {
     width: '100%',
-    height: '100%',
+    height: '110%',
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
-    borderStyle: 'dashed',
   },
   photoPlaceholderText: {
     color: '#999',
@@ -285,8 +288,8 @@ const styles = StyleSheet.create({
   infoGrid: {
     flex: 1,
     justifyContent: 'center',
-    gap: 3,
-    bottom:10,
+    gap: 1,
+    bottom:15,
   },
   infoRow: {
     flexDirection: 'row',
@@ -299,11 +302,10 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 12,
     color: '#666',
-   
     fontWeight: '500',
   },
   infoValue: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#333',
     fontWeight: 'bold',
   },

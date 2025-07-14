@@ -5,9 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Dimensions, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function RecordAddScreen() {
   const [title, setTitle] = useState('');
@@ -19,7 +17,7 @@ export default function RecordAddScreen() {
 
   // 그룹 옵션들 (실제로는 API에서 가져올 데이터)
   const groupOptions = [
-    '우리끼리 서클',
+    '갈비지',
     '친구들',
     '가족',
     '직장 동료',
@@ -220,7 +218,7 @@ export default function RecordAddScreen() {
               colors={['#ffffff', '#5A62F2']}
               style={styles.gradientButton}
             >
-              <Text style={styles.saveButtonText}>send</Text>
+              <Text style={styles.saveButtonText}>Add</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
