@@ -8,7 +8,6 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const handleLogin = () => {
-    // 로그인 페이지로 이동 (경로는 실제 프로젝트에 맞게 수정)
     router.push('/info_input');
   };
 
@@ -76,10 +75,13 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 60,
     borderRadius: 25,
+    borderWidth : 1,
+    borderColor :'black',
+    
     elevation: 3,
   },
   loginButtonText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
