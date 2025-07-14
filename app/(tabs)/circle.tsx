@@ -1,6 +1,5 @@
 import { Colors } from '@/constants/Colors';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -9,7 +8,6 @@ const { width } = Dimensions.get('window');
 
 export default function CircleScreen() {
   const [selectedTab, setSelectedTab] = useState('record');
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   const router = useRouter();
 
   const circleData = {
@@ -17,55 +15,56 @@ export default function CircleScreen() {
     description: '함께 성장하는 소중한 친구들',
     image: require('@/assets/images/circle_photo.jpg'),
     members: [
-      { id: 1, name: '김리코', profileImage: require('@/assets/images/profile1.png') },
-      { id: 2, name: '이민수', profileImage: require('@/assets/images/profile1.png') },
-      { id: 3, name: '박지혜', profileImage: require('@/assets/images/profile1.png') },
-      { id: 4, name: '최영호', profileImage: require('@/assets/images/profile1.png') },
-      { id: 5, name: '정수진', profileImage: require('@/assets/images/profile1.png') },
+      { id: 1, name: '박수빈', profileImage: require('@/assets/images/profile1.png') },
+      { id: 2, name: '김은혜', profileImage: require('@/assets/images/profile1.png') },
+      { id: 3, name: '김예진', profileImage: require('@/assets/images/profile1.png') },
+      { id: 4, name: '이지우', profileImage: require('@/assets/images/profile1.png') },
+      { id: 5, name: '김규림', profileImage: require('@/assets/images/profile1.png') },
+      { id: 6, name: '오아린', profileImage: require('@/assets/images/profile1.png') },
     ],
     specialDays: [
       { id: 1, title: '처음 만난 날', date: '2024.03.15' },
       { id: 2, title: '첫 번째 여행', date: '2024.05.20' },
       { id: 3, title: '서클 창립일', date: '2024.02.28' },
-      { id: 4, title: '첫 번째 생일파티', date: '2024.07.10' },
     ]
   };
 
-  const handleImageUpload = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1], // 정사각형 비율
-      quality: 1,
-    });
+  // 예시 레코드 데이터 (실제로는 API에서 가져올 데이터)
+  const recordData = [
+    { id: 1, image: require('@/assets/images/record.png') },
+    { id: 2, image: require('@/assets/images/record.png') },
+    { id: 3, image: require('@/assets/images/record.png') },
+    { id: 4, image: require('@/assets/images/record.png') },
+    { id: 5, image: require('@/assets/images/record.png') },
+  ];
 
-    if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
-    }
+  const handleAddRecord = () => {
+    router.push('/record_add');
   };
 
   const renderRecordContent = () => (
     <View style={styles.contentArea}>
-      {/* 명함 */}
-
-
-      {/* My Circle 섹션 */}
-      <View style={styles.circleHeader}>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Circle 정보 또는 404 메시지 */}
-      <View style={styles.circleContent}>
-        <Text style={styles.notFoundText}>404</Text>
-        <Text style={styles.notFoundMessage}>지금은 레코드간  존재하지 않아요 ㅜ_ㅜ</Text>
-      </View>
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <View style={styles.recordGrid}>
+          {/* 첫 번째 항목: 추가 버튼 */}
+          <TouchableOpacity style={styles.addButton} onPress={handleAddRecord}>
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
+          
+          {/* 레코드 이미지들 */}
+          {recordData.map((record) => (
+            <View key={record.id} style={styles.recordItem}>
+              <Image source={record.image} style={styles.recordImage} />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
 
   const renderCircleContent = () => (
     <View style={styles.contentArea}>
-       <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.contentContainer}>
           {/* 서클명 */}
           <Text style={styles.circleName}>{circleData.name}</Text>
@@ -112,7 +111,6 @@ export default function CircleScreen() {
         </View>
       </ScrollView>
     </View>
-    
   );
 
   return (
@@ -160,7 +158,7 @@ export default function CircleScreen() {
 }
 
 const styles = StyleSheet.create({
-   container: {
+  container: {
     flex: 1,
     backgroundColor: Colors.light.skyblue,
     position: 'relative',
@@ -216,7 +214,7 @@ const styles = StyleSheet.create({
   },
   underline: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 4,
     left: 0,
     height: 2,
     backgroundColor: 'black',
@@ -225,132 +223,44 @@ const styles = StyleSheet.create({
   contentArea: {
     flex: 1,
   },
-  businessCard: {
-    backgroundColor: 'white',
-    borderWidth: 1.5,
-    borderColor: 'black',
-    padding: 20,
-    flexDirection: 'row',
-    elevation: 5,
-  },
-  photoContainer: {
-    width: 100,
-    height: 120,
-    marginRight: 20,
-  },
-  profilePhoto: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
-  },
-  photoPlaceholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderStyle: 'dashed',
-  },
-  photoPlaceholderText: {
-    color: '#999',
-    fontSize: 12,
-  },
-  infoContainer: {
+  scrollContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    zIndex: 1,
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  logo: {
-    width: 80,
-    height: 30,
-    resizeMode: 'contain',
-  },
-  infoGrid: {
-    flex: 1,
-    justifyContent: 'space-around',
-  },
-  infoRow: {
+  // Record 페이지 스타일
+  recordGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },
-  infoItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  infoLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 4,
-    fontWeight: '500',
-  },
-  infoValue: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  circleHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  circleTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    paddingHorizontal: 5,
   },
   addButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#007AFF',
+    width: (width - 65) / 2,
+    height: (width - 185) / 2,
+    borderWidth: 1.5,
+    borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
+    borderRadius: 8,
   },
   addButtonText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  circleContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notFoundText: {
-    fontSize: 48,
-    fontWeight: 'bold',
     color: 'black',
+    fontSize: 40,
+    fontWeight: 'bold',
+  },
+  recordItem: {
+    width: (width - 65) / 2,
+    height: (width - 185) / 2,
     marginBottom: 10,
   },
-  notFoundMessage: {
-    fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
+  recordImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+    resizeMode: 'cover',
   },
-  circlePageContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  circlePageTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-  },
-  circlePageDescription: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
+  // Circle 페이지 스타일
   section: {
     marginBottom: 40,
   },
@@ -359,10 +269,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
-  },
-  scrollContainer: {
-    flex: 1,
-    zIndex: 1,
   },
   specialDaysContainer: {
     gap: 15,
@@ -394,7 +300,7 @@ const styles = StyleSheet.create({
   },
   circleDescription: {
     fontSize: 16,
-    color: '#666',
+    color: 'black',
     textAlign: 'left',
     marginBottom: 30,
   },
