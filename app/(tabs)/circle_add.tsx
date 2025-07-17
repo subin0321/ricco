@@ -159,11 +159,6 @@ export default function ProfileScreen() {
           placeholderTextColor="#999"
         />
 
-       
-
-   
-
-   
         {/* Send 버튼 */}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <LinearGradient
